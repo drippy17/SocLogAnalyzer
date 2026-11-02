@@ -1,0 +1,252 @@
+﻿<Window x:Class="SocLogAnalyzer.DetectionRulesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Detection Rules - SOC Log Analyzer"
+        Height="720"
+        Width="1050"
+        MinHeight="600"
+        MinWidth="850"
+        WindowStartupLocation="CenterOwner"
+        Background="#0B1120"
+        Foreground="White">
+
+    <Window.Resources>
+        <Style x:Key="RuleCard" TargetType="Border">
+            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="BorderBrush" Value="#263449"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,22">
+            <TextBlock Text="Detection Rules"
+                       FontSize="28"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="Review the authentication threat detection logic currently implemented in the analyzer."
+                       Foreground="#94A3B8"
+                       TextWrapping="Wrap"
+                       Margin="0,7,0,0"/>
+
+            <Border Background="#172033"
+                    BorderBrush="#334155"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="12"
+                    Margin="0,16,0,0">
+                <TextBlock Text="ENGINE STATUS: 3 DETECTION RULES IMPLEMENTED"
+                           Foreground="#86EFAC"
+                           FontSize="11"
+                           FontWeight="Bold"/>
+            </Border>
+        </StackPanel>
+
+        <!-- RULES -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+
+            <StackPanel>
+
+                <!-- RULE 1 -->
+                <Border Style="{StaticResource RuleCard}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="RULE 01"
+                                       Foreground="#60A5FA"
+                                       FontSize="11"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Repeated Failed Logins"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Margin="0,6,0,8"/>
+
+                            <TextBlock Text="Detects repeated failed authentication attempts for the same username and source IP address within a five-minute window."
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="650"/>
+
+                            <TextBlock Text="Detection conditions"
+                                       Foreground="#94A3B8"
+                                       FontWeight="SemiBold"
+                                       Margin="0,16,0,6"/>
+
+                            <TextBlock Text="• Medium: 5–9 failed attempts&#10;• High: 10 or more failed attempts&#10;• Grouping: Same username and IP address&#10;• Time window: 5 minutes"
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       LineHeight="23"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#3B1720"
+                                CornerRadius="8"
+                                Padding="12,7"
+                                VerticalAlignment="Top"
+                                Margin="12,0,0,0">
+                            <TextBlock Text="MEDIUM / HIGH"
+                                       Foreground="#FCA5A5"
+                                       FontSize="10"
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- RULE 2 -->
+                <Border Style="{StaticResource RuleCard}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="RULE 02"
+                                       Foreground="#A78BFA"
+                                       FontSize="11"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Possible Password Spraying"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Margin="0,6,0,8"/>
+
+                            <TextBlock Text="Detects failed login attempts from one source IP address against multiple distinct usernames in a five-minute window."
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="650"/>
+
+                            <TextBlock Text="Detection conditions"
+                                       Foreground="#94A3B8"
+                                       FontWeight="SemiBold"
+                                       Margin="0,16,0,6"/>
+
+                            <TextBlock Text="• Medium: 5–9 distinct usernames&#10;• High: 10 or more distinct usernames&#10;• Grouping: Same source IP address&#10;• Time window: 5 minutes"
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       LineHeight="23"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#292044"
+                                CornerRadius="8"
+                                Padding="12,7"
+                                VerticalAlignment="Top"
+                                Margin="12,0,0,0">
+                            <TextBlock Text="MEDIUM / HIGH"
+                                       Foreground="#C4B5FD"
+                                       FontSize="10"
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- RULE 3 -->
+                <Border Style="{StaticResource RuleCard}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="RULE 03"
+                                       Foreground="#F87171"
+                                       FontSize="11"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Possible Account Compromise"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Margin="0,6,0,8"/>
+
+                            <TextBlock Text="Detects a successful login preceded by repeated failed login attempts for the same username and IP address."
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="650"/>
+
+                            <TextBlock Text="Detection conditions"
+                                       Foreground="#94A3B8"
+                                       FontWeight="SemiBold"
+                                       Margin="0,16,0,6"/>
+
+                            <TextBlock Text="• Severity: High&#10;• Minimum: 5 preceding failed attempts&#10;• Grouping: Same username and IP address&#10;• Time window: 5 minutes before success&#10;• Evidence: Failed attempts and successful login"
+                                       Foreground="#CBD5E1"
+                                       TextWrapping="Wrap"
+                                       LineHeight="23"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#451A1A"
+                                CornerRadius="8"
+                                Padding="12,7"
+                                VerticalAlignment="Top"
+                                Margin="12,0,0,0">
+                            <TextBlock Text="HIGH"
+                                       Foreground="#FCA5A5"
+                                       FontSize="10"
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- SCOPE -->
+                <Border Background="#172033"
+                        BorderBrush="#334155"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="16"
+                        Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Current detection scope"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Text="The engine currently analyzes imported authentication logs. These rules are built into the DetectionEngine class; this page documents them and does not change their thresholds."
+                                   Foreground="#CBD5E1"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0"
+                                   LineHeight="21"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- FOOTER -->
+        <DockPanel Grid.Row="2" Margin="0,18,0,0">
+            <TextBlock Text="SOC LOG ANALYZER"
+                       Foreground="#64748B"
+                       FontSize="10"
+                       VerticalAlignment="Center"/>
+
+            <Button Content="Close"
+                    Width="100"
+                    DockPanel.Dock="Right"
+                    IsCancel="True"/>
+        </DockPanel>
+    </Grid>
+</Window>

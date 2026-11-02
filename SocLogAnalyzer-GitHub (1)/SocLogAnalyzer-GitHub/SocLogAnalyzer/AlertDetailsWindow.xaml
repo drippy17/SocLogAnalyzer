@@ -1,0 +1,347 @@
+﻿<Window x:Class="SocLogAnalyzer.AlertDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Alert Investigation"
+        Height="950"
+        Width="1000"
+        MinHeight="700"
+        MinWidth="750"
+        WindowStartupLocation="CenterOwner"
+        Background="#0B1120"
+        Foreground="White">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#93C5FD"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="6"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="ALERT INVESTIGATION"
+                       FontSize="25"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="Review detection evidence, investigate suspicious activity and record your findings."
+                       Foreground="#94A3B8"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       Margin="0,6,0,0"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- ALERT INFORMATION -->
+                <Border Background="#111827"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="ALERT INFORMATION"
+                                   Foreground="#60A5FA"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,12"/>
+
+                        <TextBlock Text="Severity"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="SeverityText"
+                                   FontSize="19"
+                                   FontWeight="Bold"
+                                   Margin="0,3,0,12"/>
+
+                        <TextBlock Text="Detection rule"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="DetectionRuleText"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
+                                   Margin="0,3,0,10"/>
+
+                        <TextBlock Text="Username"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="UsernameText"
+                                   Margin="0,3,0,10"/>
+
+                        <TextBlock Text="Source IP address"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="IPAddressText"
+                                   Margin="0,3,0,10"/>
+
+                        <TextBlock Text="Failed attempts in detection window"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="FailedAttemptsText"
+                                   Margin="0,3,0,10"/>
+
+                        <TextBlock Text="Alert timestamp"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="TimestampText"
+                                   Margin="0,3,0,10"/>
+
+                        <TextBlock Text="Detection explanation"
+                                   Foreground="#94A3B8"/>
+                        <TextBlock x:Name="DescriptionText"
+                                   TextWrapping="Wrap"
+                                   Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- RECOMMENDED RESPONSE -->
+                <Border Background="#172033"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="RECOMMENDED INVESTIGATION"
+                                   Foreground="#93C5FD"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock x:Name="RecommendedActionText"
+                                   TextWrapping="Wrap"
+                                   Foreground="#E2E8F0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- RELATED LOG EVIDENCE -->
+                <Border Background="#111827"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="RELATED FAILED-LOGIN EVIDENCE"
+                                   Foreground="#60A5FA"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Margin="0,0,0,6"/>
+
+                        <TextBlock x:Name="EvidenceSummaryText"
+                                   Foreground="#94A3B8"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,12"/>
+
+                        <DataGrid x:Name="EvidenceDataGrid"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal"
+                                  Background="#0F172A"
+                                  Foreground="White"
+                                  RowBackground="#0F172A"
+                                  AlternatingRowBackground="#172033"
+                                  BorderBrush="#334155"
+                                  MinHeight="140"
+                                  MaxHeight="300"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Timestamp"
+                                                    Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                                    Width="155"/>
+
+                                <DataGridTextColumn Header="Username"
+                                                    Binding="{Binding Username}"
+                                                    Width="140"/>
+
+                                <DataGridTextColumn Header="Source IP"
+                                                    Binding="{Binding IPAddress}"
+                                                    Width="135"/>
+
+                                <DataGridTextColumn Header="Status"
+                                                    Binding="{Binding Status}"
+                                                    Width="90"/>
+
+                                <DataGridTextColumn Header="Event Type"
+                                                    Binding="{Binding EventType}"
+                                                    Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- INVESTIGATION WORKFLOW -->
+                <Border Background="#111827"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="INVESTIGATION WORKFLOW"
+                                   Foreground="#60A5FA"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock Text="Investigation status"
+                                   Foreground="#CBD5E1"
+                                   Margin="0,0,0,6"/>
+
+                        <ComboBox x:Name="InvestigationStatusComboBox"
+                                  Height="36"
+                                  SelectedIndex="0"
+                                  Margin="0,0,0,15">
+                            <ComboBoxItem Content="New"/>
+                            <ComboBoxItem Content="Investigating"/>
+                            <ComboBoxItem Content="Resolved"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Assigned analyst"
+                                   Foreground="#CBD5E1"
+                                   Margin="0,0,0,6"/>
+
+                        <TextBox x:Name="AssignedAnalystTextBox"
+                                 Height="36"
+                                 Padding="10,8"
+                                 Background="#1E293B"
+                                 Foreground="White"
+                                 BorderBrush="#334155"
+                                 Margin="0,0,0,15"/>
+
+                        <TextBlock Text="Investigation started"
+                                   Foreground="#CBD5E1"
+                                   Margin="0,0,0,6"/>
+
+                        <TextBlock x:Name="InvestigationStartedText"
+                                   Text="Not started"
+                                   Foreground="#94A3B8"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock Text="Resolved at"
+                                   Foreground="#CBD5E1"
+                                   Margin="0,0,0,6"/>
+
+                        <TextBlock x:Name="ResolvedAtText"
+                                   Text="Not resolved"
+                                   Foreground="#94A3B8"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- INVESTIGATION NOTES -->
+                <Border Background="#111827"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="INVESTIGATION NOTES"
+                                   Foreground="#60A5FA"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Record your findings, checks performed and recommended next steps."
+                                   Foreground="#94A3B8"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBox x:Name="InvestigationNotesTextBox"
+                                 MinHeight="130"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Padding="10"
+                                 Background="#1E293B"
+                                 Foreground="White"
+                                 BorderBrush="#334155"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- INVESTIGATION HISTORY -->
+                <Border Background="#111827"
+                        CornerRadius="8"
+                        Padding="18"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="INVESTIGATION HISTORY"
+                                   Foreground="#60A5FA"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Margin="0,0,0,6"/>
+
+                        <TextBlock Text="Audit trail of recorded investigation changes."
+                                   Foreground="#94A3B8"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,12"/>
+
+                        <TextBlock x:Name="HistoryEmptyText"
+                                   Text="No investigation history recorded yet."
+                                   Foreground="#94A3B8"
+                                   Margin="0,0,0,10"/>
+
+                        <DataGrid x:Name="InvestigationHistoryDataGrid"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal"
+                                  Background="#0F172A"
+                                  Foreground="White"
+                                  RowBackground="#0F172A"
+                                  AlternatingRowBackground="#172033"
+                                  BorderBrush="#334155"
+                                  MinHeight="150"
+                                  MaxHeight="300"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Date / Time"
+                                                    Binding="{Binding ChangedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                                    Width="150"/>
+
+                                <DataGridTextColumn Header="Analyst"
+                                                    Binding="{Binding Analyst}"
+                                                    Width="110"/>
+
+                                <DataGridTextColumn Header="Action"
+                                                    Binding="{Binding Action}"
+                                                    Width="200"/>
+
+                                <DataGridTextColumn Header="Previous Status"
+                                                    Binding="{Binding PreviousStatus}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="New Status"
+                                                    Binding="{Binding NewStatus}"
+                                                    Width="100"/>
+
+                                <DataGridTextColumn Header="Notes"
+                                                    Binding="{Binding Notes}"
+                                                    Width="200"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="2"
+                Content="SAVE &amp; CLOSE INVESTIGATION"
+                Height="42"
+                Margin="0,18,0,0"
+                Background="#2563EB"
+                Foreground="White"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="CloseButton_Click"/>
+    </Grid>
+</Window>

@@ -1,0 +1,706 @@
+﻿<Window x:Class="SocLogAnalyzer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+        Title="SOC Log Analyzer"
+        Height="900" Width="1450"
+        MinHeight="700" MinWidth="1100"
+        Background="#0B1120" Foreground="White">
+
+    <Window.Resources>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#111827"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#111827"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="#263449"/>
+            <Setter Property="RowBackground" Value="#111827"/>
+            <Setter Property="AlternatingRowBackground" Value="#172033"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#263449"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+
+        <Style x:Key="PanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="BorderBrush" Value="#263449"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="205"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- SIDEBAR -->
+        <Border Grid.Column="0"
+                Background="#080D18"
+                BorderBrush="#1E293B"
+                BorderThickness="0,0,1,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Margin="20,25">
+                    <TextBlock Text="SOC"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               Foreground="#60A5FA"/>
+
+                    <TextBlock Text="LOG ANALYZER"
+                               FontSize="11"
+                               Foreground="#94A3B8"
+                               Margin="0,4,0,0"/>
+
+                    <TextBlock Text="Security Operations"
+                               FontSize="11"
+                               Foreground="#64748B"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="WORKSPACE"
+                               Foreground="#64748B"
+                               FontSize="10"
+                               Margin="20,0,0,10"/>
+
+                    <Button Content="Dashboard"
+                            Click="DashboardButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <Button Content="Import Log File"
+                            Click="ImportLogButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <Button Content="Analyze Logs"
+                            Click="AnalyzeButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <!-- NEW: DETECTION RULES -->
+                    <Button Content="Detection Rules"
+                            Click="DetectionRulesButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <Button Content="View Alert Details"
+                            Click="ViewDetailsButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <Button Content="Export Alert Report"
+                            Click="ExportButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+
+                    <Button Content="Clear Workspace"
+                            Click="ClearButton_Click"
+                            Background="Transparent"
+                            Foreground="#AEB8CC"
+                            BorderThickness="0"
+                            Padding="18,12"
+                            HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- MAIN DASHBOARD -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+
+                <StackPanel Margin="22">
+
+                    <!-- HEADER -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="Security Operations Dashboard"
+                                       FontSize="25"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Authentication monitoring, threat detection and security analytics."
+                                       Foreground="#94A3B8"
+                                       FontSize="12"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <Border x:Name="SystemStatusBorder"
+                                Grid.Column="1"
+                                Background="#1E293B"
+                                BorderBrush="#475569"
+                                BorderThickness="1"
+                                CornerRadius="18"
+                                Padding="12,7"
+                                VerticalAlignment="Center">
+
+                            <TextBlock x:Name="SystemStatusText"
+                                       Text="● WAITING FOR LOGS"
+                                       Foreground="#CBD5E1"
+                                       FontSize="10"
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- PRIMARY SUMMARY CARDS -->
+                    <UniformGrid Columns="5" Margin="0,0,0,18">
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="TOTAL LOGS"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="TotalLogsText"
+                                           Text="0"
+                                           FontSize="27"
+                                           FontWeight="Bold"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Imported events"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="FAILED LOGINS"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="FailedLoginsText"
+                                           Text="0"
+                                           FontSize="27"
+                                           FontWeight="Bold"
+                                           Foreground="#F87171"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Failed events"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="SECURITY ALERTS"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="AlertsText"
+                                           Text="0"
+                                           FontSize="27"
+                                           FontWeight="Bold"
+                                           Foreground="#FBBF24"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Detected alerts"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="HIGH SEVERITY"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="HighAlertsText"
+                                           Text="0"
+                                           FontSize="27"
+                                           FontWeight="Bold"
+                                           Foreground="#F87171"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="High priority"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0">
+                            <StackPanel>
+                                <TextBlock Text="MEDIUM / RESOLVED"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,8,0,0">
+                                    <StackPanel>
+                                        <TextBlock x:Name="MediumAlertsText"
+                                                   Text="0"
+                                                   FontSize="23"
+                                                   Foreground="#FBBF24"
+                                                   FontWeight="Bold"/>
+
+                                        <TextBlock Text="Medium"
+                                                   FontSize="10"
+                                                   Foreground="#64748B"/>
+                                    </StackPanel>
+
+                                    <Border Width="1"
+                                            Background="#334155"
+                                            Margin="10,0"/>
+
+                                    <StackPanel>
+                                        <TextBlock x:Name="ResolvedAlertsText"
+                                                   Text="0"
+                                                   FontSize="23"
+                                                   Foreground="#4ADE80"
+                                                   FontWeight="Bold"/>
+
+                                        <TextBlock Text="Resolved"
+                                                   FontSize="10"
+                                                   Foreground="#64748B"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <!-- INVESTIGATION OVERVIEW -->
+                    <TextBlock Text="Investigation Overview"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Margin="0,0,0,12"/>
+
+                    <UniformGrid Columns="3" Margin="0,0,0,18">
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="NEW ALERTS"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="NewAlertsText"
+                                           Text="0"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="#60A5FA"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Awaiting investigation"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="INVESTIGATING"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="InvestigatingAlertsText"
+                                           Text="0"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="#FBBF24"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Currently being investigated"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Margin="0">
+                            <StackPanel>
+                                <TextBlock Text="ACTIVE ALERTS"
+                                           Foreground="#94A3B8"
+                                           FontSize="10"/>
+
+                                <TextBlock x:Name="ActiveAlertsText"
+                                           Text="0"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="#FB923C"
+                                           Margin="0,8,0,0"/>
+
+                                <TextBlock Text="Not yet resolved"
+                                           Foreground="#64748B"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <!-- HIGH PRIORITY QUEUE -->
+                    <Border Style="{StaticResource PanelStyle}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="High-Priority Incident Queue"
+                                               FontSize="19"
+                                               FontWeight="Bold"/>
+
+                                    <TextBlock Text="Unresolved High-severity alerts requiring analyst attention."
+                                               Foreground="#94A3B8"
+                                               FontSize="11"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="1"
+                                        Content="Open Investigation"
+                                        Click="OpenPriorityAlertButton_Click"
+                                        Style="{StaticResource ActionButton}"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0"/>
+                            </Grid>
+
+                            <DataGrid x:Name="PriorityAlertsDataGrid"
+                                      Height="190">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="#111827"/>
+                                        <Setter Property="Foreground" Value="#E2E8F0"/>
+
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#1D4ED8"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="TIME"
+                                        Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                        Width="150"/>
+
+                                    <DataGridTextColumn Header="STATUS"
+                                        Binding="{Binding InvestigationStatus}"
+                                        Width="120"/>
+
+                                    <DataGridTextColumn Header="USERNAME"
+                                        Binding="{Binding Username}"
+                                        Width="110"/>
+
+                                    <DataGridTextColumn Header="SOURCE IP"
+                                        Binding="{Binding IPAddress}"
+                                        Width="120"/>
+
+                                    <DataGridTextColumn Header="FAILED"
+                                        Binding="{Binding FailedAttempts}"
+                                        Width="65"/>
+
+                                    <DataGridTextColumn Header="DESCRIPTION"
+                                        Binding="{Binding Description}"
+                                        Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ANALYTICS -->
+                    <TextBlock Text="Security Analytics"
+                               FontSize="21"
+                               FontWeight="Bold"
+                               Margin="0,0,0,12"/>
+
+                    <Grid Margin="0,0,0,18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.25*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Style="{StaticResource PanelStyle}"
+                                Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="Failed Login Activity"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Failed events grouped by time"
+                                           FontSize="11"
+                                           Foreground="#64748B"
+                                           Margin="0,4,0,8"/>
+
+                                <lvc:CartesianChart x:Name="LoginActivityChart"
+                                                    Height="260"
+                                                    LegendPosition="Hidden"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                Style="{StaticResource PanelStyle}"
+                                Margin="0">
+                            <StackPanel>
+                                <TextBlock Text="Alert Severity Distribution"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Detected alerts by severity"
+                                           FontSize="11"
+                                           Foreground="#64748B"
+                                           Margin="0,4,0,8"/>
+
+                                <lvc:PieChart x:Name="SeverityChart"
+                                              Height="260"
+                                              LegendPosition="Right"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Style="{StaticResource PanelStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Top Alert Source IP Addresses"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"/>
+
+                            <TextBlock Text="Source addresses ranked by detected alert count"
+                                       FontSize="11"
+                                       Foreground="#64748B"
+                                       Margin="0,4,0,8"/>
+
+                            <lvc:CartesianChart x:Name="TopIpChart"
+                                                Height="260"
+                                                LegendPosition="Hidden"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ACTIVE SECURITY ALERTS -->
+                    <Border Style="{StaticResource PanelStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Active Security Alerts"
+                                       FontSize="19"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Search and filter by username, source IP, severity, status and sort order."
+                                       Foreground="#64748B"
+                                       FontSize="11"
+                                       Margin="0,4,0,12"/>
+
+                            <WrapPanel>
+                                <TextBox x:Name="AlertSearchTextBox"
+                                         Width="175"
+                                         Height="34"
+                                         Margin="0,0,8,8"
+                                         ToolTip="Search username or source IP"/>
+
+                                <ComboBox x:Name="AlertSeverityFilterComboBox"
+                                          Width="120"
+                                          Height="34"
+                                          Margin="0,0,8,8"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="All Severities"/>
+                                    <ComboBoxItem Content="High"/>
+                                    <ComboBoxItem Content="Medium"/>
+                                </ComboBox>
+
+                                <ComboBox x:Name="AlertStatusFilterComboBox"
+                                          Width="135"
+                                          Height="34"
+                                          Margin="0,0,8,8"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="All Statuses"/>
+                                    <ComboBoxItem Content="New"/>
+                                    <ComboBoxItem Content="Investigating"/>
+                                    <ComboBoxItem Content="Resolved"/>
+                                </ComboBox>
+
+                                <ComboBox x:Name="AlertSortComboBox"
+                                          Width="150"
+                                          Height="34"
+                                          Margin="0,0,8,8"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="High Severity First"/>
+                                    <ComboBoxItem Content="Medium Severity First"/>
+                                    <ComboBoxItem Content="Newest First"/>
+                                    <ComboBoxItem Content="Oldest First"/>
+                                </ComboBox>
+
+                                <Button Content="Filter Alerts"
+                                        Click="FilterAlertsButton_Click"
+                                        Style="{StaticResource ActionButton}"/>
+
+                                <Button Content="Reset"
+                                        Click="ResetAlertFiltersButton_Click"
+                                        Style="{StaticResource ActionButton}"/>
+                            </WrapPanel>
+
+                            <DataGrid x:Name="AlertDataGrid"
+                                      Height="300">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="#111827"/>
+                                        <Setter Property="Foreground" Value="#E2E8F0"/>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Severity}" Value="High">
+                                                <Setter Property="Background" Value="#3B1720"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Severity}" Value="Medium">
+                                                <Setter Property="Background" Value="#332817"/>
+                                            </DataTrigger>
+
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#1D4ED8"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="TIME"
+                                        Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                        Width="150"/>
+
+                                    <DataGridTextColumn Header="STATUS"
+                                        Binding="{Binding InvestigationStatus}"
+                                        Width="125"/>
+
+                                    <DataGridTextColumn Header="USERNAME"
+                                        Binding="{Binding Username}"
+                                        Width="110"/>
+
+                                    <DataGridTextColumn Header="SOURCE IP"
+                                        Binding="{Binding IPAddress}"
+                                        Width="120"/>
+
+                                    <DataGridTextColumn Header="FAILED"
+                                        Binding="{Binding FailedAttempts}"
+                                        Width="65"/>
+
+                                    <DataGridTextColumn Header="SEVERITY"
+                                        Binding="{Binding Severity}"
+                                        Width="85"/>
+
+                                    <DataGridTextColumn Header="DESCRIPTION"
+                                        Binding="{Binding Description}"
+                                        Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- LOG EVENTS -->
+                    <Border Style="{StaticResource PanelStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Log Events"
+                                       FontSize="19"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Imported authentication events"
+                                       FontSize="11"
+                                       Foreground="#64748B"
+                                       Margin="0,4,0,12"/>
+
+                            <WrapPanel>
+                                <TextBox x:Name="LogSearchTextBox"
+                                         Width="220"
+                                         Height="34"
+                                         Margin="0,0,8,8"
+                                         ToolTip="Search username or source IP"/>
+
+                                <ComboBox x:Name="StatusFilterComboBox"
+                                          Width="120"
+                                          Height="34"
+                                          Margin="0,0,8,8"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="All"/>
+                                    <ComboBoxItem Content="Success"/>
+                                    <ComboBoxItem Content="Failed"/>
+                                </ComboBox>
+
+                                <Button Content="Filter Logs"
+                                        Click="FilterLogsButton_Click"
+                                        Style="{StaticResource ActionButton}"/>
+                            </WrapPanel>
+
+                            <DataGrid x:Name="LogDataGrid"
+                                      Height="300"
+                                      AutoGenerateColumns="True"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- STATUS BAR -->
+            <Border Grid.Row="1"
+                    Background="#1E293B"
+                    Padding="10,7">
+                <TextBlock x:Name="StatusText"
+                           Text="Ready. Import a security log file."
+                           Foreground="#CBD5E1"
+                           FontSize="11"/>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
